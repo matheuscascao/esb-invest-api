@@ -1,5 +1,7 @@
 ### api-construcao-software
 
-Quando for rodar, no console escreva antes na pasta do projeto npm i, isso irá baixar o node_modules no seu projeto
+Após clonar o projeto, escreva no console dentro da pasta do projeto: npm i
 
-as tabelas do banco de dados precisam ser descritas dentro de schema.prisma e rodar um migrate.
+Isso irá baixar o node_modules no seu projeto
+
+As tabelas do banco de dados precisam ser descritas dentro de schema.prisma e rodar um migrate.
