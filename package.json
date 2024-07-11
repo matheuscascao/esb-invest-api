@@ -7,7 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "ts-node src/index.ts",
-    "kysely": "kysely",
     "dev": "nodemon --exec ts-node src/index.ts"
   },
   "keywords": [],
@@ -17,6 +16,7 @@
   "devDependencies": {
     "@types/node": "^20.14.10",
     "nodemon": "^3.1.4",
+    "prisma": "^5.16.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   },
