@@ -12,3 +12,85 @@ datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
 }
+
+model Cliente {
+    id              Int    @id @default(autoincrement())
+    name            String
+    cpf             String @unique
+    data_nascimento String
+    renda_estimada  Float
+    conta           Conta?
+}
+
+model Conta {
+    id                     Int                     @id @default(autoincrement())
+    codigo                 String
+    status_conta           StatusConta
+    tipo                   ContaTipo
+    tipo_investidor        InvestidorTipo?
+    cliente                Cliente                 @relation(fields: [clienteId], references: [id])
+    clienteId              Int                     @unique
+    transacoes             Transacao[]
+    transacoesInvestimento TransacaoInvestimento[]
+    limite                 Float?
+    saldo                  Float?
+    data_criacao           DateTime                @default(now())
+    data_atualizacao       DateTime                @updatedAt
+}
+
+model Transacao {
+    id               Int             @id @default(autoincrement())
+    valor            Float
+    tipo             String
+    data             DateTime        @default(now())
+    evento_transacao EventoTransacao
+    conta            Conta           @relation(fields: [contaId], references: [id])
+    contaId          Int
+}
+
+model TransacaoInvestimento {
+    id                    Int               @id @default(autoincrement())
+    data_transacao        DateTime          @default(now())
+    quantidade            Int
+    resgatado             Boolean
+    conta                 Conta             @relation(fields: [conta_id], references: [id])
+    conta_id              Int
+    produto_financeiro    ProdutoFinanceiro @relation(fields: [produto_financeiro_id], references: [id])
+    produto_financeiro_id Int
+}
+
+model ProdutoFinanceiro {
+    id                    Int                     @id @default(autoincrement())
+    preco_unitario        Float
+    data_resgate          DateTime                @default(now())
+    taxa_transacao        Float
+    emissor               String
+    quantidade_cotas      Int
+    data_criacao          DateTime                @default(now())
+    risco                 Int
+    TransacaoInvestimento TransacaoInvestimento[]
+}
+
+enum StatusConta {
+    ATIVA
+    INATIVA
+    SUSPENSA
+    PENDENTE
+}
+
+enum InvestidorTipo {
+    NORMAL
+    QUALIFICADO
+}
+
+enum ContaTipo {
+    CORRENTE
+    CONTAINVESTIMENTO
+}
+
+enum EventoTransacao {
+    RESGATE_INVESTIMENTO
+    APLICACAO_INVESTIMENTO
+    DEPOSITO_CORRENTE
+    SAQUE_CORRENTE
+}
