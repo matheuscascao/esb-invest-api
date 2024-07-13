@@ -20,6 +20,8 @@ model Cliente {
     data_nascimento String
     renda_estimada  Float
     conta           Conta?
+
+    @@map("cliente")
 }
 
 model Conta {
@@ -36,6 +38,8 @@ model Conta {
     saldo                  Float?
     data_criacao           DateTime                @default(now())
     data_atualizacao       DateTime                @updatedAt
+
+    @@map("conta")
 }
 
 model Transacao {
@@ -46,6 +50,8 @@ model Transacao {
     evento_transacao EventoTransacao
     conta            Conta           @relation(fields: [contaId], references: [id])
     contaId          Int
+
+    @@map("transacao")
 }
 
 model TransacaoInvestimento {
@@ -57,6 +63,8 @@ model TransacaoInvestimento {
     conta_id              Int
     produto_financeiro    ProdutoFinanceiro @relation(fields: [produto_financeiro_id], references: [id])
     produto_financeiro_id Int
+
+    @@map("transacao_investimento")
 }
 
 model ProdutoFinanceiro {
@@ -69,6 +77,8 @@ model ProdutoFinanceiro {
     data_criacao          DateTime                @default(now())
     risco                 Int
     TransacaoInvestimento TransacaoInvestimento[]
+
+    @@map("produto_financeiro")
 }
 
 enum StatusConta {
