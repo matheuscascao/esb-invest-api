@@ -28,7 +28,7 @@ model Conta {
     id                     Int                     @id @default(autoincrement())
     codigo                 String
     status_conta           StatusConta
-    tipo                   ContaTipo
+    tipo_conta             ContaTipo
     tipo_investidor        InvestidorTipo?
     cliente                Cliente                 @relation(fields: [clienteId], references: [id])
     clienteId              Int                     @unique
@@ -45,7 +45,7 @@ model Conta {
 model Transacao {
     id               Int             @id @default(autoincrement())
     valor            Float
-    tipo             String
+    tipo_transacao   String
     data             DateTime        @default(now())
     evento_transacao EventoTransacao
     conta            Conta           @relation(fields: [contaId], references: [id])

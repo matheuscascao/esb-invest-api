@@ -1,6 +1,10 @@
 import fastify, {FastifyInstance} from "fastify";
-
+import {clienteRoutes} from "./routes/cliente.routes"
 const app: FastifyInstance = fastify({logger: true})
+
+app.register(clienteRoutes, {
+    prefix: '/clientes'
+})
 
 app.listen(
     {
