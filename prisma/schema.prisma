@@ -15,9 +15,9 @@ datasource db {
 
 model Cliente {
     id              Int    @id @default(autoincrement())
-    name            String
+    nome            String
     cpf             String @unique
-    data_nascimento String
+    data_nascimento DateTime
     renda_estimada  Float
     conta_corrente           ContaCorrente?
     conta_investimento           ContaInvestimento?
@@ -27,16 +27,14 @@ model Cliente {
 
 model ContaCorrente {
     id                     Int                     @id @default(autoincrement())
-    codigo                 String
     status_conta           StatusConta
-    tipo_investidor        InvestidorTipo?
-    cliente                Cliente                 @relation(fields: [clienteId], references: [id])
-    clienteId              Int                     @unique
+    cliente                Cliente                 @relation(fields: [cliente_id], references: [id])
+    cliente_id              Int                     @unique
     transacoes             Transacao[]
     limite                 Float?
-    saldo                  Float?
-    data_criacao           DateTime                @default(now())
-    data_atualizacao       DateTime                @updatedAt
+    conta_investimento           ContaInvestimento?
+    criado_em           DateTime                @default(now())
+    atualizado_em       DateTime                @updatedAt
 
     @@map("conta_corrente")
 }
@@ -45,10 +43,11 @@ model Transacao {
     id               Int             @id @default(autoincrement())
     valor            Float
     tipo_transacao   String
-    data             DateTime        @default(now())
     evento_transacao EventoTransacao
     conta_corrente            ContaCorrente           @relation(fields: [conta_corrente_id], references: [id])
     conta_corrente_id          Int
+    criado_em             DateTime        @default(now())
+    atualizado_em       DateTime                @updatedAt
 
     @@map("transacao")
 }
@@ -56,28 +55,29 @@ model Transacao {
 
 model ContaInvestimento {
     id                     Int                     @id @default(autoincrement())
-    codigo                 String
     status_conta           StatusConta
     tipo_investidor        InvestidorTipo?
-    cliente                Cliente                 @relation(fields: [clienteId], references: [id])
-    clienteId              Int                     @unique
+    cliente                Cliente                 @relation(fields: [cliente_id], references: [id])
+    cliente_id              Int                     @unique
     transacoesInvestimento TransacaoInvestimento[]
-    limite                 Float?
-    data_criacao           DateTime                @default(now())
-    data_atualizacao       DateTime                @updatedAt
+    conta_corrente            ContaCorrente           @relation(fields: [conta_corrente_id], references: [id])
+    conta_corrente_id          Int  @unique
+    criado_em           DateTime                @default(now())
+    atualizado_em       DateTime                @updatedAt
 
     @@map("conta_investimento")
 }
 
 model TransacaoInvestimento {
     id                    Int               @id @default(autoincrement())
-    data_transacao        DateTime          @default(now())
     quantidade            Int               
     resgatado             Boolean           @default(false)
     conta                 ContaInvestimento             @relation(fields: [conta_investimento_id], references: [id])
     conta_investimento_id              Int
     produto_financeiro    ProdutoFinanceiro @relation(fields: [produto_financeiro_id], references: [id])
     produto_financeiro_id Int
+    criado_em        DateTime          @default(now())
+    atualizado_em       DateTime                @updatedAt
 
     @@map("transacao_investimento")
 }
@@ -85,13 +85,14 @@ model TransacaoInvestimento {
 model ProdutoFinanceiro {
     id                    Int                     @id @default(autoincrement())
     preco_unitario        Float
-    data_resgate          DateTime                @default(now())
+    data_resgate          DateTime?                
     taxa_transacao        Float
     emissor               String
     quantidade_cotas      Int
-    data_criacao          DateTime                @default(now())
     risco                 Int
     TransacaoInvestimento TransacaoInvestimento[]
+    criado_em          DateTime                @default(now())
+    atualizado_em       DateTime                @updatedAt
 
     @@map("produto_financeiro")
 }
