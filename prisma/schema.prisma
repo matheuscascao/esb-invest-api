@@ -14,70 +14,69 @@ datasource db {
 }
 
 model Cliente {
-    id              Int    @id @default(autoincrement())
-    nome            String
-    cpf             String @unique
-    data_nascimento DateTime
-    renda_estimada  Float
-    conta_corrente           ContaCorrente?
-    conta_investimento           ContaInvestimento?
+    id                 Int                @id @default(autoincrement())
+    nome               String
+    cpf                String             @unique
+    data_nascimento    DateTime
+    renda_estimada     Float
+    conta_corrente     ContaCorrente?
+    conta_investimento ContaInvestimento?
 
     @@map("cliente")
 }
 
 model ContaCorrente {
-    id                     Int                     @id @default(autoincrement())
-    status_conta           StatusConta
-    cliente                Cliente                 @relation(fields: [cliente_id], references: [id])
-    cliente_id              Int                     @unique
-    transacoes             Transacao[]
-    limite                 Float?
-    conta_investimento           ContaInvestimento?
-    criado_em           DateTime                @default(now())
-    atualizado_em       DateTime                @updatedAt
+    id                 Int                @id @default(autoincrement())
+    status_conta       StatusConta        @default(ATIVA)
+    cliente            Cliente            @relation(fields: [cliente_id], references: [id])
+    cliente_id         Int                @unique
+    transacoes         Transacao[]
+    limite             Float?
+    conta_investimento ContaInvestimento?
+    criado_em          DateTime           @default(now())
+    atualizado_em      DateTime           @updatedAt
 
     @@map("conta_corrente")
 }
 
 model Transacao {
-    id               Int             @id @default(autoincrement())
-    valor            Float
-    tipo_transacao   String
-    evento_transacao EventoTransacao
-    conta_corrente            ContaCorrente           @relation(fields: [conta_corrente_id], references: [id])
-    conta_corrente_id          Int
-    criado_em             DateTime        @default(now())
-    atualizado_em       DateTime                @updatedAt
+    id                Int             @id @default(autoincrement())
+    valor             Float
+    tipo_transacao    String
+    evento_transacao  EventoTransacao
+    conta_corrente    ContaCorrente   @relation(fields: [conta_corrente_id], references: [id])
+    conta_corrente_id Int
+    criado_em         DateTime        @default(now())
+    atualizado_em     DateTime        @updatedAt
 
     @@map("transacao")
 }
-
 
 model ContaInvestimento {
     id                     Int                     @id @default(autoincrement())
     status_conta           StatusConta
     tipo_investidor        InvestidorTipo?
     cliente                Cliente                 @relation(fields: [cliente_id], references: [id])
-    cliente_id              Int                     @unique
+    cliente_id             Int                     @unique
     transacoesInvestimento TransacaoInvestimento[]
-    conta_corrente            ContaCorrente           @relation(fields: [conta_corrente_id], references: [id])
-    conta_corrente_id          Int  @unique
-    criado_em           DateTime                @default(now())
-    atualizado_em       DateTime                @updatedAt
+    conta_corrente         ContaCorrente           @relation(fields: [conta_corrente_id], references: [id])
+    conta_corrente_id      Int                     @unique
+    criado_em              DateTime                @default(now())
+    atualizado_em          DateTime                @updatedAt
 
     @@map("conta_investimento")
 }
 
 model TransacaoInvestimento {
     id                    Int               @id @default(autoincrement())
-    quantidade            Int               
+    quantidade            Int
     resgatado             Boolean           @default(false)
-    conta                 ContaInvestimento             @relation(fields: [conta_investimento_id], references: [id])
-    conta_investimento_id              Int
+    conta                 ContaInvestimento @relation(fields: [conta_investimento_id], references: [id])
+    conta_investimento_id Int
     produto_financeiro    ProdutoFinanceiro @relation(fields: [produto_financeiro_id], references: [id])
     produto_financeiro_id Int
-    criado_em        DateTime          @default(now())
-    atualizado_em       DateTime                @updatedAt
+    criado_em             DateTime          @default(now())
+    atualizado_em         DateTime          @updatedAt
 
     @@map("transacao_investimento")
 }
@@ -85,14 +84,14 @@ model TransacaoInvestimento {
 model ProdutoFinanceiro {
     id                    Int                     @id @default(autoincrement())
     preco_unitario        Float
-    data_resgate          DateTime?                
+    data_resgate          DateTime?
     taxa_transacao        Float
     emissor               String
     quantidade_cotas      Int
     risco                 Int
     TransacaoInvestimento TransacaoInvestimento[]
-    criado_em          DateTime                @default(now())
-    atualizado_em       DateTime                @updatedAt
+    criado_em             DateTime                @default(now())
+    atualizado_em         DateTime                @updatedAt
 
     @@map("produto_financeiro")
 }
