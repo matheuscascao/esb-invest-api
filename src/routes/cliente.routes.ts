@@ -1,16 +1,15 @@
 import { FastifyInstance } from 'fastify';
 import { ClienteService } from '../services/cliente.service';
-import { IClienteCreate } from '../interfaces/cliente.interface';
+import { ClienteCreate } from '../types';
 
 export async function clienteRoutes(fastify: FastifyInstance) {
   const clienteService = new ClienteService();
 
-  //store = create
-  fastify.post<{ Body: IClienteCreate }>('/store', (req, reply) => {
-    const { nome, cpf, data_nascimento, renda_estimada } = req.body;
+  fastify.post<{ Body: ClienteCreate }>('/', (req, reply) => {
+    const { name, cpf, data_nascimento, renda_estimada } = req.body;
     try {
       const data = clienteService.create({
-        nome,
+        name,
         cpf,
         data_nascimento,
         renda_estimada,
@@ -19,9 +18,5 @@ export async function clienteRoutes(fastify: FastifyInstance) {
     } catch (error) {
       reply.send(error);
     }
-  });
-
-  fastify.get('/', (req, reply) => {
-    reply.send({ hello: 'world' });
   });
 }

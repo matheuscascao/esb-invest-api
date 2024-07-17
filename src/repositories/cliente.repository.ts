@@ -1,16 +1,11 @@
 import { prisma } from '../database/prisma-client';
-import {
-  ICliente,
-  IClienteRepository,
-  IClienteCreate,
-} from '../interfaces/cliente.interface';
 import { Cliente } from '@prisma/client';
 
-class ClienteRepository implements IClienteRepository {
+class ClienteRepository {
   async create(data: Omit<Cliente, 'id'>): Promise<Cliente> {
     const result = await prisma.cliente.create({
       data: {
-        nome: data.nome,
+        name: data.name,
         cpf: data.cpf,
         data_nascimento: data.data_nascimento,
         renda_estimada: data.renda_estimada,
@@ -19,7 +14,7 @@ class ClienteRepository implements IClienteRepository {
     return result;
   }
 
-  async findByCpf(cpf: string): Promise<ICliente | null> {
+  async findByCpf(cpf: string): Promise<Cliente | null> {
     const result = await prisma.cliente.findFirst({
       where: {
         cpf,

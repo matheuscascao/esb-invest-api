@@ -1,8 +1,9 @@
-import { ICliente, IClienteCreate } from '../interfaces/cliente.interface';
+import { Cliente } from '@prisma/client';
 import { ClienteRepository } from '../repositories/cliente.repository';
 
 class ClienteService {
-  private clienteReposity: ClienteRepository;
+  private clienteReposity;
+
   constructor() {
     this.clienteReposity = new ClienteRepository();
   }
@@ -12,7 +13,7 @@ class ClienteService {
     cpf,
     data_nascimento,
     renda_estimada,
-  }: IClienteCreate): Promise<ICliente> {
+  }: Omit<Cliente, 'id'>): Promise<Cliente> {
     const verifyClientExists = await this.clienteReposity.findByCpf(cpf);
     if (verifyClientExists) {
       throw new Error('O cliente já existe');
