@@ -1,6 +1,7 @@
 import fastify, { FastifyInstance } from 'fastify';
 import { clienteRoutes } from './routes/cliente.routes';
 import { contaCorrenteRoutes } from './routes/conta-corrente.routes';
+import { contaInvestimentoRoutes } from './routes/conta-investimento.routes';
 const app: FastifyInstance = fastify({ logger: true });
 
 app.register(clienteRoutes, {
@@ -8,6 +9,9 @@ app.register(clienteRoutes, {
 });
 app.register(contaCorrenteRoutes, {
   prefix: '/contas-correntes',
+});
+app.register(contaInvestimentoRoutes, {
+  prefix: '/contas-investimentos',
 });
 
 app.listen(
