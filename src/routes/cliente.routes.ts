@@ -7,10 +7,10 @@ export async function clienteRoutes(fastify: FastifyInstance) {
 
   //store = create
   fastify.post<{ Body: IClienteCreate }>('/store', (req, reply) => {
-    const { name, cpf, data_nascimento, renda_estimada } = req.body;
+    const { nome, cpf, data_nascimento, renda_estimada } = req.body;
     try {
       const data = clienteService.create({
-        name,
+        nome,
         cpf,
         data_nascimento,
         renda_estimada,

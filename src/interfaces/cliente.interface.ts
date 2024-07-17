@@ -1,15 +1,15 @@
 export interface ICliente {
   id: number;
-  name: string;
+  nome: string;
   cpf: string;
-  data_nascimento: string;
+  data_nascimento: Date;
   renda_estimada: number;
 }
 
 export interface IClienteCreate {
-  name: string;
+  nome: string;
   cpf: string;
-  data_nascimento: string;
+  data_nascimento: Date;
   renda_estimada: number;
 }
 

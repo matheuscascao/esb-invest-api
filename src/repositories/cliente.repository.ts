@@ -4,12 +4,13 @@ import {
   IClienteRepository,
   IClienteCreate,
 } from '../interfaces/cliente.interface';
+import { Cliente } from '@prisma/client';
 
 class ClienteRepository implements IClienteRepository {
-  async create(data: IClienteCreate): Promise<ICliente> {
+  async create(data: Omit<Cliente, 'id'>): Promise<Cliente> {
     const result = await prisma.cliente.create({
       data: {
-        name: data.name,
+        nome: data.nome,
         cpf: data.cpf,
         data_nascimento: data.data_nascimento,
         renda_estimada: data.renda_estimada,
