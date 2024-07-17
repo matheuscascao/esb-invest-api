@@ -1,17 +1,6 @@
 import { prisma } from '../database/prisma-client';
 import { ContaCorrente } from '@prisma/client';
 
-// create a repository that implements the crud
-// type ContaCorrente = {
-//   id: number;
-//   codigo: string;
-//   status_conta: $Enums.StatusConta;
-//   clienteId: number;
-//   limite: number | null;
-//   criado_em: Date;
-//   atualizado_em: Date;
-// }
-
 class ContaCorrenteRepository {
   async create(
     data: Omit<
