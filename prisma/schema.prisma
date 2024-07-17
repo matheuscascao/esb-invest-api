@@ -26,15 +26,14 @@ model Cliente {
 }
 
 model ContaCorrente {
-    id                  Int         @id @default(autoincrement())
-    status_conta        StatusConta @default(ATIVA)
-    cliente             Cliente     @relation(fields: [cliente_id], references: [id])
-    cliente_id          Int         @unique
-    transacoes          Transacao[]
-    limite              Float?
-    criado_em           DateTime    @default(now())
-    atualizado_em       DateTime    @updatedAt
-    contaInvestimentoId Int?
+    id            Int         @id @default(autoincrement())
+    status_conta  StatusConta @default(ATIVA)
+    cliente       Cliente     @relation(fields: [cliente_id], references: [id])
+    cliente_id    Int         @unique
+    transacoes    Transacao[]
+    limite        Float?
+    criado_em     DateTime    @default(now())
+    atualizado_em DateTime    @updatedAt
 
     @@map("conta_corrente")
 }
@@ -54,7 +53,7 @@ model Transacao {
 
 model ContaInvestimento {
     id                     Int                     @id @default(autoincrement())
-    status_conta           StatusConta
+    status_conta           StatusConta             @default(ATIVA)
     tipo_investidor        InvestidorTipo?
     cliente                Cliente                 @relation(fields: [cliente_id], references: [id])
     cliente_id             Int                     @unique
