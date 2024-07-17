@@ -5,7 +5,7 @@ export async function contaCorrenteRoutes(fastify: FastifyInstance) {
   const contaCorrenteService = new ContaCorrenteService();
 
   fastify.post<{ Body: { cliente_id: number; limite: number } }>(
-    '/create',
+    '/',
     async (req, reply) => {
       const { cliente_id, limite } = req.body;
       try {
