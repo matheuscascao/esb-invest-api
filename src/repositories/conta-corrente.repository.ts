@@ -16,6 +16,20 @@ class ContaCorrenteRepository {
     });
     return result;
   }
+
+  async findById(id: number): Promise<ContaCorrente | null> {
+    const result = await prisma.contaCorrente.findFirst({
+      where: {
+        id,
+      },
+    });
+    return result || null;
+  }
+
+  async findMany(): Promise<ContaCorrente[] | null> {
+    const result = await prisma.contaCorrente.findMany();
+    return result;
+  }
 }
 
 export default ContaCorrenteRepository;

@@ -1,6 +1,6 @@
 import { Cliente } from '@prisma/client';
-import { ClienteRepository } from '../repositories/cliente.repository';
 import { ClienteCreate } from '../types';
+import ClienteRepository from '../repositories/cliente.repository';
 
 class ClienteService {
   private clienteRepository;
@@ -16,8 +16,8 @@ class ClienteService {
     renda_estimada,
   }: ClienteCreate): Promise<Cliente> {
     const verifyClientExists = await this.clienteRepository.findByCpf(cpf);
-    if (verifyClientExists) {
-      throw new Error('O cliente já existe');
+    if (!verifyClientExists) {
+      throw new Error('O cliente não existe');
     }
     const result = await this.clienteRepository.create({
       nome,
@@ -42,4 +42,4 @@ class ClienteService {
   }
 }
 
-export { ClienteService };
+export default ClienteService;

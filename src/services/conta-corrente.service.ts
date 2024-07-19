@@ -15,7 +15,19 @@ class ContaCorrenteService {
       cliente_id,
       limite,
     });
+    return result;
+  }
 
+  public async findById(id: number): Promise<ContaCorrente> {
+    const result = await this.contaCorrenteRepository.findById(id);
+    if (!result) {
+      throw new Error('O cliente não existe');
+    }
+    return result;
+  }
+
+  public async findAll(): Promise<ContaCorrente[] | null> {
+    const result = await this.contaCorrenteRepository.findMany();
     return result;
   }
 }

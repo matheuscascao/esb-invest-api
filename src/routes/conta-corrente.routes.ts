@@ -19,4 +19,32 @@ export async function contaCorrenteRoutes(fastify: FastifyInstance) {
       }
     }
   );
+
+  fastify.get<{ Params: { id: string } }>('/:id', async (req, reply) => {
+    const { id } = req.params;
+    try {
+      const data = await contaCorrenteService.findById(Number(id));
+      return reply.send(data);
+    } catch (error) {
+      reply.send(error);
+    }
+  });
+
+  fastify.get('/', async (req, reply) => {
+    try {
+      const data = await contaCorrenteService.findAll();
+      return reply.send(data);
+    } catch (error) {
+      reply.send(error);
+    }
+  });
+  //primeiro implementar transacoes
+  fastify.get('/saldo', async (req, reply) => {
+    try {
+      const data = await contaCorrenteService.getSaldo();
+      return reply.send(data);
+    } catch (error) {
+      reply.send(error);
+    }
+  });
 }

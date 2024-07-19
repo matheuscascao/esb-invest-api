@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { ClienteService } from '../services/cliente.service';
 import { ClienteCreate } from '../types';
-import { Cliente } from '@prisma/client';
+import ClienteService from '../services/cliente.service';
 
 export async function clienteRoutes(fastify: FastifyInstance) {
   const clienteService = new ClienteService();
@@ -24,7 +23,6 @@ export async function clienteRoutes(fastify: FastifyInstance) {
 
   fastify.get<{ Params: { id: string } }>('/:id', async (req, reply) => {
     const { id } = req.params;
-
     try {
       const data = await clienteService.findById(Number(id));
       return reply.send(data);

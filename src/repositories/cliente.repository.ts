@@ -39,4 +39,4 @@ class ClienteRepository {
   }
 }
 
-export { ClienteRepository };
+export default ClienteRepository;

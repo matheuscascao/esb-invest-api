@@ -37,11 +37,13 @@ model ContaCorrente {
 
     @@map("conta_corrente")
 }
-
+//verifica saldo - limites
+//saldo negativo - piso = limite
+//calcula saldo pelos registros anteriores - method service conta corrente
 model Transacao {
     id                Int             @id @default(autoincrement())
     valor             Float
-    tipo_transacao    String
+    tipo_transacao    TipoTransacao
     evento_transacao  EventoTransacao
     conta_corrente    ContaCorrente   @relation(fields: [conta_corrente_id], references: [id])
     conta_corrente_id Int
@@ -50,6 +52,7 @@ model Transacao {
 
     @@map("transacao")
 }
+
 
 model ContaInvestimento {
     id                     Int                     @id @default(autoincrement())
@@ -110,4 +113,9 @@ enum EventoTransacao {
     APLICACAO_INVESTIMENTO
     DEPOSITO_CORRENTE
     SAQUE_CORRENTE
+}
+
+enum TipoTransacao {
+    ENTRADA
+    SAIDA
 }
