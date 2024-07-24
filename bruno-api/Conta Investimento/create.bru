@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{url}}/contas-investimento
+  url: {{url}}/contas-investimentos
   body: json
   auth: none
 }
@@ -13,6 +13,6 @@ post {
 body:json {
   {
     "cliente_id": 1,
-    "limite": 30000
+    "tipo_investidor": "QUALIFICADO"
   }
 }

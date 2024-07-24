@@ -1,0 +1,19 @@
+meta {
+  name: cria transacao
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}/transacoes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "conta_corrente_id": 9,
+    "valor": 1500,
+    "evento_transacao": "DEPOSITO_CORRENTE"
+  }
+}
