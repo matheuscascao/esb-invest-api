@@ -38,13 +38,4 @@ export async function contaCorrenteRoutes(fastify: FastifyInstance) {
       reply.send(error);
     }
   });
-  //primeiro implementar transacoes
-  fastify.get('/saldo', async (req, reply) => {
-    try {
-      const data = await contaCorrenteService.getSaldo();
-      return reply.send(data);
-    } catch (error) {
-      reply.send(error);
-    }
-  });
 }

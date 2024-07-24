@@ -1,10 +1,13 @@
 import ContaCorrenteRepository from '../repositories/conta-corrente.repository';
+import TransacaoRepository from '../repositories/transacao.repository';
 import { ContaCorrente } from '@prisma/client';
 
 class ContaCorrenteService {
   private contaCorrenteRepository: ContaCorrenteRepository;
+  private transacaoRepository: TransacaoRepository;
   constructor() {
     this.contaCorrenteRepository = new ContaCorrenteRepository();
+    this.transacaoRepository = new TransacaoRepository();
   }
 
   public async create({
@@ -18,12 +21,15 @@ class ContaCorrenteService {
     return result;
   }
 
-  public async findById(id: number): Promise<ContaCorrente> {
+  public async findById(
+    id: number
+  ): Promise<ContaCorrente & { saldo: number }> {
     const result = await this.contaCorrenteRepository.findById(id);
     if (!result) {
       throw new Error('O cliente não existe');
     }
-    return result;
+    const saldo = await this.transacaoRepository.calculateBalance(id);
+    return { ...result, saldo };
   }
 
   public async findAll(): Promise<ContaCorrente[] | null> {

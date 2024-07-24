@@ -28,5 +28,19 @@ class TransacaoRepository {
     });
     return result || null;
   }
+
+  async calculateBalance(conta_corrente_id: number): Promise<number> {
+    const result = await prisma.transacao.aggregate({
+      where: {
+        conta_corrente_id,
+      },
+      _sum: {
+        valor: true,
+      },
+    });
+    console.log(result._sum.valor);
+    return result._sum.valor || 0;
+  }
 }
+
 export default TransacaoRepository;
