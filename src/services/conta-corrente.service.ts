@@ -28,7 +28,7 @@ class ContaCorrenteService {
     if (!result) {
       throw new Error('O cliente não existe');
     }
-    const saldo = await this.transacaoRepository.calculateBalance(id);
+    const saldo = await this.transacaoRepository.calculaSaldo(id);
     return { ...result, saldo };
   }
 

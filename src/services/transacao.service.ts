@@ -1,4 +1,4 @@
-import { TipoTransacao, Transacao } from '@prisma/client';
+import { TipoTransacao, Transacao, ContaCorrente } from '@prisma/client';
 import TransacaoRepository from '../repositories/transacao.repository';
 import { TransacaoCreate } from '../types';
 
@@ -14,20 +14,18 @@ class TransacaoService {
     valor,
     evento_transacao,
   }: TransacaoCreate): Promise<Transacao> {
-    const verifyAccountExists = await this.transacaoRepository.findById(
+    const contaCorrente = await this.transacaoRepository.findById(
       conta_corrente_id
     );
-    if (!verifyAccountExists) {
-      throw new Error('A conta não existe');
-    }
+    if (!contaCorrente) throw new Error('A conta não existe');
 
-    let tipo_transacao: TipoTransacao;
+    const isTransacaoValidaLimite = await this.validaTransacaoLimite(
+      valor,
+      contaCorrente
+    );
+    if (!isTransacaoValidaLimite) throw new Error('Transação inválida');
 
-    if (valor > 0) {
-      tipo_transacao = TipoTransacao.ENTRADA;
-    } else {
-      tipo_transacao = TipoTransacao.SAIDA;
-    }
+    let tipo_transacao = this.getTipoTransacao(valor);
 
     const result = await this.transacaoRepository.create({
       conta_corrente_id,
@@ -36,6 +34,23 @@ class TransacaoService {
       tipo_transacao,
     });
     return result;
+  }
+
+  private getTipoTransacao(valor: number): TipoTransacao {
+    return valor > 0 ? TipoTransacao.ENTRADA : TipoTransacao.SAIDA;
+  }
+
+  private async validaTransacaoLimite(
+    valor: number,
+    conta: ContaCorrente
+  ): Promise<boolean> {
+    const saldo = await this.transacaoRepository.calculaSaldo(conta.id);
+    const limite = conta.limite;
+
+    if (saldo + valor <= limite) {
+      return true;
+    }
+    return false;
   }
 }
 

@@ -31,12 +31,13 @@ model ContaCorrente {
     cliente       Cliente     @relation(fields: [cliente_id], references: [id])
     cliente_id    Int         @unique
     transacoes    Transacao[]
-    limite        Float?
+    limite        Float
     criado_em     DateTime    @default(now())
     atualizado_em DateTime    @updatedAt
 
     @@map("conta_corrente")
 }
+
 //verifica saldo - limites
 //saldo negativo - piso = limite
 //calcula saldo pelos registros anteriores - method service conta corrente
@@ -52,7 +53,6 @@ model Transacao {
 
     @@map("transacao")
 }
-
 
 model ContaInvestimento {
     id                     Int                     @id @default(autoincrement())

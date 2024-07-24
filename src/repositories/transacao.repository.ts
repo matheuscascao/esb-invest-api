@@ -29,7 +29,7 @@ class TransacaoRepository {
     return result || null;
   }
 
-  async calculateBalance(conta_corrente_id: number): Promise<number> {
+  async calculaSaldo(conta_corrente_id: number): Promise<number> {
     const result = await prisma.transacao.aggregate({
       where: {
         conta_corrente_id,
