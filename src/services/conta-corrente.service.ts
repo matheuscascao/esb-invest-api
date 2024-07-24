@@ -1,6 +1,6 @@
 import ContaCorrenteRepository from '../repositories/conta-corrente.repository';
 import TransacaoRepository from '../repositories/transacao.repository';
-import { ContaCorrente } from '@prisma/client';
+import { ContaCorrente, Transacao } from '@prisma/client';
 
 class ContaCorrenteService {
   private contaCorrenteRepository: ContaCorrenteRepository;
@@ -30,6 +30,13 @@ class ContaCorrenteService {
     }
     const saldo = await this.transacaoRepository.calculaSaldo(id);
     return { ...result, saldo };
+  }
+
+  public async getTransacoes(conta_corrente_id: number): Promise<Transacao[]> {
+    const result = await this.transacaoRepository.getTransacoes(
+      conta_corrente_id
+    );
+    return result;
   }
 
   public async findAll(): Promise<ContaCorrente[] | null> {

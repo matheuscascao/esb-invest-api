@@ -29,6 +29,18 @@ class TransacaoRepository {
     return result || null;
   }
 
+  async getTransacoes(conta_corrente_id: number): Promise<Transacao[]> {
+    const result = await prisma.transacao.findMany({
+      where: {
+        conta_corrente_id,
+      },
+      orderBy: {
+        criado_em: 'desc',
+      },
+    });
+    return result;
+  }
+
   async calculaSaldo(conta_corrente_id: number): Promise<number> {
     const result = await prisma.transacao.aggregate({
       where: {

@@ -38,4 +38,18 @@ export async function contaCorrenteRoutes(fastify: FastifyInstance) {
       reply.send(error);
     }
   });
+
+  fastify.post<{
+    Params: { conta_corrente_id: number };
+  }>('/:conta_corrente_id/transacoes', async (req, reply) => {
+    const { conta_corrente_id } = req.params;
+    try {
+      const data = await contaCorrenteService.getTransacoes(
+        Number(conta_corrente_id)
+      );
+      return reply.send(data);
+    } catch (error) {
+      reply.send(error);
+    }
+  });
 }
