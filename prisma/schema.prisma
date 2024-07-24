@@ -26,21 +26,19 @@ model Cliente {
 }
 
 model ContaCorrente {
-    id            Int         @id @default(autoincrement())
-    status_conta  StatusConta @default(ATIVA)
-    cliente       Cliente     @relation(fields: [cliente_id], references: [id])
-    cliente_id    Int         @unique
-    transacoes    Transacao[]
-    limite        Float
-    criado_em     DateTime    @default(now())
-    atualizado_em DateTime    @updatedAt
+    id                 Int                @id @default(autoincrement())
+    status_conta       StatusConta        @default(ATIVA)
+    cliente            Cliente            @relation(fields: [cliente_id], references: [id])
+    cliente_id         Int                @unique
+    transacoes         Transacao[]
+    limite             Float
+    criado_em          DateTime           @default(now())
+    atualizado_em      DateTime           @updatedAt
+    conta_investimento ContaInvestimento?
 
     @@map("conta_corrente")
 }
 
-//verifica saldo - limites
-//saldo negativo - piso = limite
-//calcula saldo pelos registros anteriores - method service conta corrente
 model Transacao {
     id                Int             @id @default(autoincrement())
     valor             Float
@@ -60,6 +58,8 @@ model ContaInvestimento {
     tipo_investidor        InvestidorTipo?
     cliente                Cliente                 @relation(fields: [cliente_id], references: [id])
     cliente_id             Int                     @unique
+    conta_corrente         ContaCorrente           @relation(fields: [conta_corrente_id], references: [id])
+    conta_corrente_id      Int                     @unique
     transacoesInvestimento TransacaoInvestimento[]
     criado_em              DateTime                @default(now())
     atualizado_em          DateTime                @updatedAt
@@ -84,11 +84,10 @@ model TransacaoInvestimento {
 model ProdutoFinanceiro {
     id                    Int                     @id @default(autoincrement())
     preco_unitario        Float
-    data_resgate          DateTime?
-    taxa_transacao        Float
+    data_resgate          DateTime
+    rentabilidade_anual   Float
     emissor               String
     quantidade_cotas      Int
-    risco                 Int
     TransacaoInvestimento TransacaoInvestimento[]
     criado_em             DateTime                @default(now())
     atualizado_em         DateTime                @updatedAt

@@ -1,0 +1,22 @@
+meta {
+  name: create produto financeiro
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/produtos-financeiros
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "number",
+    "preco_unitario": "number",
+    "data_resgate": "Date",
+    "rentabilidade_anual": "number",
+    "emissor": "BACEN",
+    "quantidade_cotas": 10
+  }
+}

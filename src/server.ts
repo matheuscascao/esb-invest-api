@@ -3,6 +3,7 @@ import { clienteRoutes } from './routes/cliente.routes';
 import { contaCorrenteRoutes } from './routes/conta-corrente.routes';
 import { contaInvestimentoRoutes } from './routes/conta-investimento.routes';
 import { transacoesRoutes } from './routes/transacao.routes';
+import { ProdutoFinanceiroRoutes } from './routes/produto-financeiro.routes';
 
 const app: FastifyInstance = fastify({ logger: true });
 
@@ -17,6 +18,9 @@ app.register(contaInvestimentoRoutes, {
 });
 app.register(transacoesRoutes, {
   prefix: '/transacoes',
+});
+app.register(ProdutoFinanceiroRoutes, {
+  prefix: '/produtos-financeiros',
 });
 
 app.listen(

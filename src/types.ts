@@ -1,4 +1,8 @@
-import { EventoTransacao, TipoTransacao } from '@prisma/client';
+import {
+  EventoTransacao,
+  TipoTransacao,
+  ProdutoFinanceiro,
+} from '@prisma/client';
 
 export type ClienteCreate = {
   nome: string;
@@ -13,3 +17,8 @@ export type TransacaoCreate = {
   evento_transacao: EventoTransacao;
   tipo_transacao?: TipoTransacao;
 };
+
+export type ProdutoFinanceiroCreate = Omit<
+  ProdutoFinanceiro,
+  'id' | 'criado_em' | 'atualizado_em'
+>;
