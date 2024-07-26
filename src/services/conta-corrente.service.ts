@@ -1,13 +1,16 @@
 import ContaCorrenteRepository from '../repositories/conta-corrente.repository';
 import TransacaoRepository from '../repositories/transacao.repository';
 import { ContaCorrente, Transacao } from '@prisma/client';
+import TransacaoService from '../services/transacao.service';
 
 class ContaCorrenteService {
   private contaCorrenteRepository: ContaCorrenteRepository;
   private transacaoRepository: TransacaoRepository;
+  private transacaoService: TransacaoService;
   constructor() {
     this.contaCorrenteRepository = new ContaCorrenteRepository();
     this.transacaoRepository = new TransacaoRepository();
+    this.transacaoService = new TransacaoService();
   }
 
   public async create({
@@ -42,6 +45,28 @@ class ContaCorrenteService {
   public async findAll(): Promise<ContaCorrente[] | null> {
     const result = await this.contaCorrenteRepository.findMany();
     return result;
+  }
+
+  public async transferirFundos({
+    contaOrigemId,
+    contaDestinoId,
+    valor,
+  }: {
+    contaOrigemId: number;
+    contaDestinoId: number;
+    valor: number;
+  }): Promise<void> {
+    await this.transacaoService.create({
+      conta_corrente_id: contaOrigemId,
+      valor: -valor,
+      evento_transacao: 'SAQUE_CORRENTE',
+    });
+
+    await this.transacaoService.create({
+      conta_corrente_id: contaDestinoId,
+      valor: valor,
+      evento_transacao: 'DEPOSITO_CORRENTE',
+    });
   }
 }
 

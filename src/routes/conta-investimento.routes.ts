@@ -25,4 +25,25 @@ export async function contaInvestimentoRoutes(fastify: FastifyInstance) {
       reply.send(error);
     }
   });
+
+  fastify.post<{
+    Body: {
+      conta_investimento_id: number;
+      produto_financeiro_id: number;
+      quantidade: number;
+    };
+  }>('/aplica-investimento', async (req, reply) => {
+    const { conta_investimento_id, produto_financeiro_id, quantidade } =
+      req.body;
+    try {
+      await contaInvestimentoService.aplicaInvestimento({
+        conta_investimento_id,
+        produto_financeiro_id,
+        quantidade,
+      });
+      return reply.send('Investimento aplicado com sucesso');
+    } catch (error) {
+      reply.send(error);
+    }
+  });
 }

@@ -52,4 +52,25 @@ export async function contaCorrenteRoutes(fastify: FastifyInstance) {
       reply.send(error);
     }
   });
+
+  fastify.post<{
+    Body: {
+      contaOrigemId: number;
+      contaDestinoId: number;
+      valor: number;
+    };
+  }>('/transferir', async (req, reply) => {
+    const { contaOrigemId, contaDestinoId, valor } = req.body;
+    try {
+      await contaCorrenteService.transferirFundos({
+        contaOrigemId,
+        contaDestinoId,
+        valor,
+      });
+      return reply.send({ message: 'Transfer completed successfully' });
+    } catch (error) {
+      const err = error as Error;
+      reply.code(500).send({ error: err.message });
+    }
+  });
 }

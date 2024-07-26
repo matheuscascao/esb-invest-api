@@ -2,6 +2,7 @@ import {
   EventoTransacao,
   TipoTransacao,
   ProdutoFinanceiro,
+  TransacaoInvestimento,
 } from '@prisma/client';
 
 export type ClienteCreate = {
@@ -21,4 +22,9 @@ export type TransacaoCreate = {
 export type ProdutoFinanceiroCreate = Omit<
   ProdutoFinanceiro,
   'id' | 'criado_em' | 'atualizado_em'
+>;
+
+export type TransacaoInvestimentoCreate = Omit<
+  TransacaoInvestimento,
+  'id' | 'criado_em' | 'atualizado_em' | 'resgatado'
 >;

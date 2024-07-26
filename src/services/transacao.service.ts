@@ -19,13 +19,13 @@ class TransacaoService {
     );
     if (!contaCorrente) throw new Error('A conta não existe');
 
+    let tipo_transacao = this.getTipoTransacao(valor);
     const isTransacaoValidaLimite = await this.validaTransacaoLimite(
       valor,
-      contaCorrente
+      contaCorrente,
+      tipo_transacao
     );
-    if (!isTransacaoValidaLimite) throw new Error('Transação inválida');
-
-    let tipo_transacao = this.getTipoTransacao(valor);
+    if (!isTransacaoValidaLimite) throw new Error('Transação  por limite');
 
     const result = await this.transacaoRepository.create({
       conta_corrente_id,
@@ -42,15 +42,20 @@ class TransacaoService {
 
   private async validaTransacaoLimite(
     valor: number,
-    conta: ContaCorrente
+    conta: ContaCorrente,
+    tipo_transacao: TipoTransacao
   ): Promise<boolean> {
+    if (tipo_transacao === TipoTransacao.ENTRADA) return true;
+
     const saldo = await this.transacaoRepository.calculaSaldo(conta.id);
     const limite = conta.limite;
 
-    if (saldo + valor <= limite) {
-      return true;
+    console.log(saldo, -limite);
+
+    if (saldo - valor <= -limite) {
+      return false;
     }
-    return false;
+    return true;
   }
 }
 

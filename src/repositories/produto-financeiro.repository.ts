@@ -9,6 +9,15 @@ class ProdutoFinanceiroRepository {
     });
     return result;
   }
+
+  async findById(id: number): Promise<ProdutoFinanceiro | null> {
+    const result = await prisma.produtoFinanceiro.findFirst({
+      where: {
+        id,
+      },
+    });
+    return result || null;
+  }
 }
 
 export default ProdutoFinanceiroRepository;

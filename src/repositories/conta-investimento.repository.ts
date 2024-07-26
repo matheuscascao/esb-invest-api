@@ -17,6 +17,15 @@ class ContaInvestimentoRepository {
     });
     return result;
   }
+
+  async findById(id: number): Promise<ContaInvestimento | null> {
+    const result = await prisma.contaInvestimento.findFirst({
+      where: {
+        id,
+      },
+    });
+    return result || null;
+  }
 }
 
 export default ContaInvestimentoRepository;
