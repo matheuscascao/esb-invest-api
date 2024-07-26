@@ -46,4 +46,24 @@ export async function contaInvestimentoRoutes(fastify: FastifyInstance) {
       reply.send(error);
     }
   });
+
+  fastify.get<{
+    Params: {
+      contaInvestimentoId: string;
+    };
+  }>('/:contaInvestimentoId', async (req, reply) => {
+    const { contaInvestimentoId } = req.params;
+    try {
+      const totalReturns = await contaInvestimentoService.calculateTotalReturns(
+        Number(contaInvestimentoId)
+      );
+      const contaInvestimento =
+        await contaInvestimentoService.getContaInvestimento(
+          +contaInvestimentoId
+        );
+      return reply.send({ ...contaInvestimento, totalReturns });
+    } catch (error) {
+      reply.status(500).send(error);
+    }
+  });
 }

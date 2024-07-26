@@ -94,7 +94,7 @@ class ContaInvestimentoService {
   private async validateProdutoInvestimentoCount(
     produto_financeiro_id: number,
     quantidade: number
-  ): Promise<bool> {
+  ): Promise<boolean> {
     const produtoFinanceiroTransacoesCount =
       await this.TransacaoInvestimentoRepository.countTransacoesByProdutoFinanceiro(
         produto_financeiro_id
@@ -114,6 +114,70 @@ class ContaInvestimentoService {
       return false;
     }
     return true;
+  }
+
+  public async getContaInvestimento(
+    contaInvestimentoId: number
+  ): Promise<ContaInvestimento | null> {
+    const result = await this.ContaInvestimentoRepository.findById(
+      contaInvestimentoId
+    );
+    return result;
+  }
+
+  public async calculateTotalReturns(
+    contaInvestimentoId: number
+  ): Promise<number> {
+    const transactions =
+      await this.TransacaoInvestimentoRepository.getTransacoes(
+        contaInvestimentoId
+      );
+    console.log('Transactions: ', transactions);
+
+    let totalReturns = 0;
+
+    for (const transaction of transactions) {
+      const produtoFinanceiro = await this.ProdutoFinanceiroRepository.findById(
+        transaction.produto_financeiro_id
+      );
+      if (!produtoFinanceiro) {
+        throw new Error('ProdutoFinanceiro not found');
+      }
+
+      // Calculate the difference in years between now and the creation date of the investment
+      const elapsedTimeYears = this.calculateElapsedTimeInYears(
+        new Date(),
+        transaction.criado_em
+      );
+
+      // Calculate the current value of the investment based on the annual rate
+      const currentValue = this.calculateCurrentValue(
+        transaction.quantidade,
+        produtoFinanceiro.preco_unitario,
+        produtoFinanceiro.rentabilidade_anual,
+        elapsedTimeYears
+      );
+
+      totalReturns += currentValue;
+    }
+
+    return totalReturns;
+  }
+
+  private calculateElapsedTimeInYears(startDate: Date, endDate: Date): number {
+    const msPerYear = 1000 * 60 * 60 * 24 * 365;
+    return Math.floor((endDate.getTime() - startDate.getTime()) / msPerYear);
+  }
+
+  private calculateCurrentValue(
+    quantidade: number,
+    precoUnitario: number,
+    rentabilidadeAnual: number,
+    elapsedTimeYears: number
+  ): number {
+    // Assuming rentabilidade_anual is expressed as a percentage (e.g., 5% = 0.05)
+    const investmentValue = quantidade * precoUnitario;
+    return investmentValue * Math.pow(1 + rentabilidadeAnual, elapsedTimeYears);
   }
 }
 
