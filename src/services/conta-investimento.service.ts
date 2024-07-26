@@ -1,7 +1,7 @@
 import ContaInvestimentoRepository from '../repositories/conta-investimento.repository';
 import ProdutoFinanceiroRepository from '../repositories/produto-financeiro.repository';
 import TransacaoInvestimentoRepository from '../repositories/transacao-investimento.repository';
-import { ContaInvestimento } from '@prisma/client';
+import { ContaInvestimento, TransacaoInvestimento } from '@prisma/client';
 import { TransacaoInvestimentoCreate } from '../types';
 import TransacaoService from '../services/transacao.service'; // Adjust the path as necessary
 class ContaInvestimentoService {
@@ -127,17 +127,35 @@ class ContaInvestimentoService {
 
   public async calculateretornoTotalAtual(
     contaInvestimentoId: number
-  ): Promise<number> {
-    const transactions =
+  ): Promise<{
+    computadoTransacoesPendentes: number;
+    computadoTransacoesResgatadas: number;
+  }> {
+    const transacoesPendentes =
       await this.TransacaoInvestimentoRepository.getTransacoes(
         contaInvestimentoId,
         false
       );
-    console.log('Transactions: ', transactions);
+    const computadoTransacoesPendentes = await this.computaValorTransacoes(
+      transacoesPendentes
+    );
 
-    let retornoTotalAtual = 0;
+    const transacoesResgatadas =
+      await this.TransacaoInvestimentoRepository.getTransacoes(
+        contaInvestimentoId,
+        true
+      );
+    const computadoTransacoesResgatadas =
+      await this.computaValorTransacoesPassadas(transacoesResgatadas);
 
-    for (const transaction of transactions) {
+    return { computadoTransacoesPendentes, computadoTransacoesResgatadas };
+  }
+
+  private async computaValorTransacoes(
+    transacoes: TransacaoInvestimento[]
+  ): Promise<number> {
+    let computado = 0;
+    for (const transaction of transacoes) {
       const produtoFinanceiro = await this.ProdutoFinanceiroRepository.findById(
         transaction.produto_financeiro_id
       );
@@ -156,10 +174,37 @@ class ContaInvestimentoService {
         tempoDias
       );
 
-      retornoTotalAtual += valorAtual;
+      computado += valorAtual;
     }
+    return computado;
+  }
 
-    return retornoTotalAtual;
+  private async computaValorTransacoesPassadas(
+    transacoes: TransacaoInvestimento[]
+  ): Promise<number> {
+    let computado = 0;
+    for (const transaction of transacoes) {
+      const produtoFinanceiro = await this.ProdutoFinanceiroRepository.findById(
+        transaction.produto_financeiro_id
+      );
+      if (!produtoFinanceiro) {
+        throw new Error('ProdutoFinanceiro not found');
+      }
+
+      const tempoDias = this.calculaDiferencaTempoDias(
+        transaction.criado_em,
+        produtoFinanceiro.data_resgate
+      );
+      const valorAtual = this.calcularValorPresente(
+        transaction.quantidade,
+        produtoFinanceiro.preco_unitario,
+        produtoFinanceiro.rentabilidade_anual,
+        tempoDias
+      );
+
+      computado += valorAtual;
+    }
+    return computado;
   }
 
   private calculaDiferencaTempoDias(startDate: Date, endDate: Date): number {
