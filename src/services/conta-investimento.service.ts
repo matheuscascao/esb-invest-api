@@ -186,7 +186,7 @@ class ContaInvestimentoService {
     return valorAtual;
   }
 
-  public async resgataInvestimento() {
+  public async resgataInvestimento(): Promise<number> {
     const produtosFinanceirosDataResgateHoje =
       await this.ProdutoFinanceiroRepository.findByDataResgate(new Date());
     const produtosFinanceirosIds = produtosFinanceirosDataResgateHoje.map(
@@ -197,7 +197,6 @@ class ContaInvestimentoService {
       await this.TransacaoInvestimentoRepository.getTransacoesNaoResgatadasByProdutoFinanceiro(
         produtosFinanceirosIds
       );
-
     for (const transaction of transacoesNaoResgatadas) {
       const produtoFinanceiroId = transaction.produto_financeiro_id;
       const produtoFinanceiro = await this.ProdutoFinanceiroRepository.findById(
@@ -230,6 +229,8 @@ class ContaInvestimentoService {
 
       await this.TransacaoInvestimentoRepository.updateResgate(transaction.id);
     }
+
+    return transacoesNaoResgatadas.length;
   }
 }
 
