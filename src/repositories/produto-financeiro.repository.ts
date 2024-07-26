@@ -18,6 +18,32 @@ class ProdutoFinanceiroRepository {
     });
     return result || null;
   }
+
+  async findByDataResgate(data_resgate: Date): Promise<ProdutoFinanceiro[]> {
+    const result = await prisma.produtoFinanceiro.findMany({
+      where: {
+        data_resgate: {
+          gte: new Date(
+            data_resgate.getFullYear(),
+            data_resgate.getMonth(),
+            data_resgate.getDate(),
+            0,
+            0,
+            0
+          ),
+          lt: new Date(
+            data_resgate.getFullYear(),
+            data_resgate.getMonth(),
+            data_resgate.getDate() + 1,
+            0,
+            0,
+            0
+          ),
+        },
+      },
+    });
+    return result;
+  }
 }
 
 export default ProdutoFinanceiroRepository;

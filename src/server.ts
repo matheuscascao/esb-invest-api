@@ -29,3 +29,7 @@ app.listen(
   },
   () => console.log('Server is running on port 3100')
 );
+
+import ContaInvestimentoService from './services/conta-investimento.service';
+const service = new ContaInvestimentoService();
+service.resgataInvestimento();

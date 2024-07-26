@@ -23,11 +23,13 @@ class TransacaoRepository {
   }
 
   async getTransacoes(
-    conta_investimento_id: number
+    conta_investimento_id: number,
+    resgatado: boolean
   ): Promise<TransacaoInvestimento[]> {
     const result = await prisma.transacaoInvestimento.findMany({
       where: {
         conta_investimento_id,
+        resgatado,
       },
       orderBy: {
         criado_em: 'desc',
@@ -47,19 +49,33 @@ class TransacaoRepository {
     return result;
   }
 
-  // async calculaValorAtualConta(conta_corrente_id: number): Promise<number> {
-  //   const result = await prisma.transacao.aggregate({
-  //     where: {
-  //       conta_corrente_id,
-  //     },
-  //     _sum: {
-  //       valor: true,
-  //     },
-  //   });
-  //   console.log(result._sum.valor);
-  //   return result._sum.valor || 0;
-  // }
-  // recebe conta_investimento_id e calcula valor total investido com base na quantidade de produtos financeiros, valor unitário, e taxa
+  async getTransacoesNaoResgatadasByProdutoFinanceiro(
+    produto_financeiro_ids: number[]
+  ): Promise<TransacaoInvestimento[]> {
+    const result = await prisma.transacaoInvestimento.findMany({
+      where: {
+        produto_financeiro_id: {
+          in: produto_financeiro_ids,
+        },
+        resgatado: false,
+      },
+    });
+    return result;
+  }
+
+  updateResgate = async (
+    transacao_id: number
+  ): Promise<TransacaoInvestimento> => {
+    const result = await prisma.transacaoInvestimento.update({
+      where: {
+        id: transacao_id,
+      },
+      data: {
+        resgatado: true,
+      },
+    });
+    return result;
+  };
 }
 
 export default TransacaoRepository;

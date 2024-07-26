@@ -8,14 +8,14 @@ class ContaInvestimentoService {
   private ContaInvestimentoRepository: ContaInvestimentoRepository;
   private ProdutoFinanceiroRepository: ProdutoFinanceiroRepository;
   private TransacaoInvestimentoRepository: TransacaoInvestimentoRepository;
-  private TransacaoService: TransacaoService; // Inject TransacaoService
+  private TransacaoService: TransacaoService;
 
   constructor() {
     this.ContaInvestimentoRepository = new ContaInvestimentoRepository();
     this.ProdutoFinanceiroRepository = new ProdutoFinanceiroRepository();
     this.TransacaoInvestimentoRepository =
       new TransacaoInvestimentoRepository();
-    this.TransacaoService = new TransacaoService(); // Initialize TransacaoService
+    this.TransacaoService = new TransacaoService();
   }
 
   public async create({
@@ -130,7 +130,8 @@ class ContaInvestimentoService {
   ): Promise<number> {
     const transactions =
       await this.TransacaoInvestimentoRepository.getTransacoes(
-        contaInvestimentoId
+        contaInvestimentoId,
+        false
       );
     console.log('Transactions: ', transactions);
 
@@ -148,14 +149,14 @@ class ContaInvestimentoService {
         transaction.criado_em,
         new Date()
       );
-      const currentValue = this.calcularValorPresente(
+      const valorAtual = this.calcularValorPresente(
         transaction.quantidade,
         produtoFinanceiro.preco_unitario,
         produtoFinanceiro.rentabilidade_anual,
         tempoDias
       );
 
-      retornoTotalAtual += currentValue;
+      retornoTotalAtual += valorAtual;
     }
 
     return retornoTotalAtual;
@@ -183,6 +184,52 @@ class ContaInvestimentoService {
 
     console.log('Valor atual: ', valorAtual);
     return valorAtual;
+  }
+
+  public async resgataInvestimento() {
+    const produtosFinanceirosDataResgateHoje =
+      await this.ProdutoFinanceiroRepository.findByDataResgate(new Date());
+    const produtosFinanceirosIds = produtosFinanceirosDataResgateHoje.map(
+      (produto) => produto.id
+    );
+
+    const transacoesNaoResgatadas =
+      await this.TransacaoInvestimentoRepository.getTransacoesNaoResgatadasByProdutoFinanceiro(
+        produtosFinanceirosIds
+      );
+
+    for (const transaction of transacoesNaoResgatadas) {
+      const produtoFinanceiroId = transaction.produto_financeiro_id;
+      const produtoFinanceiro = await this.ProdutoFinanceiroRepository.findById(
+        produtoFinanceiroId
+      );
+      if (!produtoFinanceiro) {
+        throw new Error('ProdutoFinanceiro not found');
+      }
+      const tempoDias = this.calculaDiferencaTempoDias(
+        transaction.criado_em,
+        new Date()
+      );
+
+      const valorAtual = this.calcularValorPresente(
+        transaction.quantidade,
+        produtoFinanceiro.preco_unitario,
+        produtoFinanceiro.rentabilidade_anual,
+        tempoDias
+      );
+
+      const contaCorrenteId = await this.getContaCorrenteId(
+        transaction.conta_investimento_id
+      );
+
+      this.TransacaoService.create({
+        conta_corrente_id: contaCorrenteId,
+        valor: valorAtual,
+        evento_transacao: 'RESGATE_INVESTIMENTO',
+      });
+
+      await this.TransacaoInvestimentoRepository.updateResgate(transaction.id);
+    }
   }
 }
 
