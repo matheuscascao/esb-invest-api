@@ -144,18 +144,15 @@ class ContaInvestimentoService {
         throw new Error('ProdutoFinanceiro not found');
       }
 
-      // Calculate the difference in years between now and the creation date of the investment
-      const elapsedTimeYears = this.calculateElapsedTimeInYears(
-        new Date(),
-        transaction.criado_em
+      const tempoDias = this.calculaDiferencaTempoDias(
+        transaction.criado_em,
+        new Date()
       );
-
-      // Calculate the current value of the investment based on the annual rate
-      const currentValue = this.calculateCurrentValue(
+      const currentValue = this.calcularValorPresente(
         transaction.quantidade,
         produtoFinanceiro.preco_unitario,
         produtoFinanceiro.rentabilidade_anual,
-        elapsedTimeYears
+        tempoDias
       );
 
       totalReturns += currentValue;
@@ -164,20 +161,28 @@ class ContaInvestimentoService {
     return totalReturns;
   }
 
-  private calculateElapsedTimeInYears(startDate: Date, endDate: Date): number {
-    const msPerYear = 1000 * 60 * 60 * 24 * 365;
-    return Math.floor((endDate.getTime() - startDate.getTime()) / msPerYear);
+  private calculaDiferencaTempoDias(startDate: Date, endDate: Date): number {
+    const msPerDay = 1000 * 60 * 60 * 24;
+
+    const diffInMs = endDate.getTime() - startDate.getTime();
+
+    const quantidadeDias = Math.floor(diffInMs / msPerDay);
+    return quantidadeDias;
   }
 
-  private calculateCurrentValue(
+  private calcularValorPresente(
     quantidade: number,
     precoUnitario: number,
     rentabilidadeAnual: number,
-    elapsedTimeYears: number
+    quantidadeDias: number
   ): number {
-    // Assuming rentabilidade_anual is expressed as a percentage (e.g., 5% = 0.05)
     const investmentValue = quantidade * precoUnitario;
-    return investmentValue * Math.pow(1 + rentabilidadeAnual, elapsedTimeYears);
+
+    const valorAtual =
+      investmentValue * Math.pow(1 + rentabilidadeAnual, quantidadeDias / 365);
+
+    console.log('Valor atual: ', valorAtual);
+    return valorAtual;
   }
 }
 
