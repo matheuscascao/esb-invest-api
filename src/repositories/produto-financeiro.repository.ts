@@ -44,6 +44,11 @@ class ProdutoFinanceiroRepository {
     });
     return result;
   }
+
+  async findMany(): Promise<ProdutoFinanceiro[] | null> {
+    const result = await prisma.produtoFinanceiro.findMany();
+    return result;
+  }
 }
 
 export default ProdutoFinanceiroRepository;

@@ -67,4 +67,13 @@ export async function contaInvestimentoRoutes(fastify: FastifyInstance) {
       reply.status(500).send(error);
     }
   });
+
+  fastify.get('/', async (req, reply) => {
+    try {
+      const data = await contaInvestimentoService.findAll();
+      return reply.send(data);
+    } catch (error) {
+      reply.status(500).send(error);
+    }
+  });
 }

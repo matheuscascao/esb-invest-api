@@ -277,6 +277,10 @@ class ContaInvestimentoService {
 
     return transacoesNaoResgatadas.length;
   }
+  public async findAll(): Promise<ContaInvestimento[] | null> {
+    const result = await this.ContaInvestimentoRepository.findMany();
+    return result;
+  }
 }
 
 export default ContaInvestimentoService;

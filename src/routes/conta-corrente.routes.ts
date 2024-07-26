@@ -19,7 +19,7 @@ export async function contaCorrenteRoutes(fastify: FastifyInstance) {
       }
     }
   );
-
+  //getindex
   fastify.get<{ Params: { id: string } }>('/:id', async (req, reply) => {
     const { id } = req.params;
     try {
@@ -29,7 +29,7 @@ export async function contaCorrenteRoutes(fastify: FastifyInstance) {
       reply.send(error);
     }
   });
-
+  //getall
   fastify.get('/', async (req, reply) => {
     try {
       const data = await contaCorrenteService.findAll();
@@ -38,8 +38,8 @@ export async function contaCorrenteRoutes(fastify: FastifyInstance) {
       reply.send(error);
     }
   });
-
-  fastify.post<{
+  //get transacoes
+  fastify.get<{
     Params: { conta_corrente_id: number };
   }>('/:conta_corrente_id/transacoes', async (req, reply) => {
     const { conta_corrente_id } = req.params;

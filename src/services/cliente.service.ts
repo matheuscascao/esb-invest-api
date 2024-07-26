@@ -16,8 +16,8 @@ class ClienteService {
     renda_estimada,
   }: ClienteCreate): Promise<Cliente> {
     const verifyClientExists = await this.clienteRepository.findByCpf(cpf);
-    if (!verifyClientExists) {
-      throw new Error('O cliente não existe');
+    if (verifyClientExists) {
+      throw new Error('O cliente já existe');
     }
     const result = await this.clienteRepository.create({
       nome,

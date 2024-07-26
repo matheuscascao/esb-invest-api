@@ -26,6 +26,11 @@ class ContaInvestimentoRepository {
     });
     return result || null;
   }
+
+  async findMany(): Promise<ContaInvestimento[] | null> {
+    const result = await prisma.contaInvestimento.findMany();
+    return result;
+  }
 }
 
 export default ContaInvestimentoRepository;
