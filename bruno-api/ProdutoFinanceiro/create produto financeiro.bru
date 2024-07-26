@@ -1,7 +1,7 @@
 meta {
   name: create produto financeiro
   type: http
-  seq: 2
+  seq: 1
 }
 
 post {
@@ -12,10 +12,9 @@ post {
 
 body:json {
   {
-    "id": "number",
-    "preco_unitario": "number",
-    "data_resgate": "Date",
-    "rentabilidade_anual": "number",
+    "preco_unitario": 1000,
+    "data_resgate": "2024-12-12T14:30:00Z",
+    "rentabilidade_anual": 13.00,
     "emissor": "BACEN",
     "quantidade_cotas": 10
   }

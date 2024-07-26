@@ -1,0 +1,19 @@
+meta {
+  name: transferir
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/contas-correntes/transferir
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "contaOrigemId": 9,
+    "contaDestinoId": 11,
+    "valor": 30000
+  }
+}

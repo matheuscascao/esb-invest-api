@@ -1,0 +1,19 @@
+meta {
+  name: aplica-investimento
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/contas-investimentos/aplica-investimento
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "conta_investimento_id": 2,
+    "produto_financeiro_id": 1,
+    "quantidade": 9999
+  }
+}
