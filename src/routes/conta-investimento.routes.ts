@@ -54,14 +54,15 @@ export async function contaInvestimentoRoutes(fastify: FastifyInstance) {
   }>('/:contaInvestimentoId', async (req, reply) => {
     const { contaInvestimentoId } = req.params;
     try {
-      const totalReturns = await contaInvestimentoService.calculateTotalReturns(
-        Number(contaInvestimentoId)
-      );
+      const retornoTotalAtual =
+        await contaInvestimentoService.calculateretornoTotalAtual(
+          Number(contaInvestimentoId)
+        );
       const contaInvestimento =
         await contaInvestimentoService.getContaInvestimento(
           +contaInvestimentoId
         );
-      return reply.send({ ...contaInvestimento, totalReturns });
+      return reply.send({ ...contaInvestimento, retornoTotalAtual });
     } catch (error) {
       reply.status(500).send(error);
     }

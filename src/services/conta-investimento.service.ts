@@ -125,7 +125,7 @@ class ContaInvestimentoService {
     return result;
   }
 
-  public async calculateTotalReturns(
+  public async calculateretornoTotalAtual(
     contaInvestimentoId: number
   ): Promise<number> {
     const transactions =
@@ -134,7 +134,7 @@ class ContaInvestimentoService {
       );
     console.log('Transactions: ', transactions);
 
-    let totalReturns = 0;
+    let retornoTotalAtual = 0;
 
     for (const transaction of transactions) {
       const produtoFinanceiro = await this.ProdutoFinanceiroRepository.findById(
@@ -155,10 +155,10 @@ class ContaInvestimentoService {
         tempoDias
       );
 
-      totalReturns += currentValue;
+      retornoTotalAtual += currentValue;
     }
 
-    return totalReturns;
+    return retornoTotalAtual;
   }
 
   private calculaDiferencaTempoDias(startDate: Date, endDate: Date): number {
